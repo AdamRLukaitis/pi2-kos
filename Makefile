@@ -7,6 +7,7 @@ OBJCOPY :=$(TOOLCHAIN)arm-none-eabi-objcopy
 CFLAGS :=-O2 -mfpu=vfp -mfloat-abi=hard -march=armv7-a -fpic -mtune=cortex-a7 -ffreestanding -std=gnu99 -c
 SOURCES_ASM := $(wildcard *.S)
 SOURCES_C   := $(wildcard *.c)
+HEADERS_C   := $(wildcard *.h)
 SOURCES :=$(SOURCES_ASM)
 SOURCES +=$(SOURCES_C)
 
