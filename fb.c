@@ -22,11 +22,14 @@ void initialize_fb_struct(volatile pi_framebuffer *fb, unsigned int width, unsig
 }
 
 unsigned int fb_get_pixel_address(pi_framebuffer* fb, unsigned int x, unsigned y) 
-{
-	return physical_address((void *)fb->pointer) + (x + y * fb->width) * fb->depth;
+{	
+	unsigned int pixel_size = fb->depth / 8;
+	unsigned int row_offset = fb->width * y;
+	
+	return physical_address((void *)fb->pointer) + ((row_offset + x) * pixel_size);
 }
 
-int fb_setpixel(pi_framebuffer* fb, unsigned int x, unsigned int y, unsigned int pixel) 
+int fb_set_pixel(pi_framebuffer* fb, unsigned int x, unsigned int y, unsigned int pixel) 
 {
 	if(x > fb->width) 
 	{
@@ -43,6 +46,27 @@ int fb_setpixel(pi_framebuffer* fb, unsigned int x, unsigned int y, unsigned int
 	mmio_write(pixel_address, pixel);
 	
 	return 0;
+}
+
+void fb_venezuela_flag(pi_framebuffer* fb)
+{
+	for(int x = 0; x < fb->width; x++) 
+	{
+		for(int y = 0; y < fb->height; y++) {
+			if(y < 252) 
+			{
+				fb_set_pixel(fb, x, y, 0xFFFF00);
+			}
+			else if((y > 252) && (y < 504))
+			{
+				fb_set_pixel(fb, x, y, 0x0000FF);
+			}
+			else 
+			{
+				fb_set_pixel(fb, x, y, 0xFF0000);
+			}
+		}
+	}
 }
 
 void fb_test_gradient(pi_framebuffer* fb, unsigned int steps) 
@@ -68,7 +92,7 @@ void fb_test_gradient(pi_framebuffer* fb, unsigned int steps)
 		{
 			for(int y = 0; y < fb->width; y++)
 			{
-				fb_setpixel(fb, counter, y, (0xFF0000 & current_red) | (0x00FF00 & current_green) | (0x0000FF & current_blue));
+				fb_set_pixel(fb, counter, y, (0xFF0000 & current_red) | (0x00FF00 & current_green) | (0x0000FF & current_blue));
 			}
 			
 			counter++;
@@ -93,7 +117,7 @@ void init_fb()
 	uart_puth(FRAMEBUFFER_ADDRESS);
 	uart_puts(" \n\r");
 	
-	initialize_fb_struct(fb, 640, 480, 24);
+	initialize_fb_struct(fb, 1024, 768, 32);
 	
 	dmb();
 	uart_puts("[init_fb]:: Writing to mailbox\n\r");
@@ -129,6 +153,17 @@ void init_fb()
 	uart_puth(fb_physical_address);
 	uart_puts(" \n\r");
 	
-	fb_test_gradient(fb, 80);
+	uart_puts("[init_fb]:: Framebuffer pitch: ");
+	uart_puth(fb->pitch);
+	uart_puts(" \n\r");
+	
+	uart_puts("[init_fb]:: Framebuffer size: ");
+	uart_puth(fb->size);
+	uart_puts(" \n\r");
+	
+	fb_venezuela_flag(fb);
+	
+	
+	//fb_test_gradient(fb, 80);
 	//fb_blank_screen(fb);
 }
