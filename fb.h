@@ -19,5 +19,6 @@ typedef struct {
 pi_framebuffer;
 
 void init_fb();
+int fb_setpixel(pi_framebuffer* fb, unsigned int x, unsigned int y, unsigned int pixel);
 
 #endif
