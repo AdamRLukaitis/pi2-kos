@@ -68,3 +68,22 @@ void uart_puts(const char* str)
 {
 	uart_write((const unsigned char*) str, strlen(str));
 }
+
+void uart_puth ( unsigned int d )
+{
+    //unsigned int ra;
+    unsigned int rb;
+    unsigned int rc;
+	
+	uart_puts("0x");
+    rb=32;
+    while(1)
+    {
+        rb-=4;
+        rc=(d>>rb)&0xF;
+        if(rc>9) rc+=0x37; else rc+=0x30;
+        uart_putc(rc);
+        if(rb==0) break;
+    }
+    uart_putc(0x20);
+}

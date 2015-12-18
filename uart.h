@@ -1,10 +1,12 @@
 #ifndef UART_H_INCLUDED
 #define UART_H_INCLUDED
 
+#include "io.h"
+
 enum UART0
 {
 	// The base address for UART.
-    UART0_BASE = (0x3F201000),
+    UART0_BASE = (GPIO_BASE + 0x201000),
  
     // The offsets for reach register for the UART.
     UART0_DR     = (UART0_BASE + 0x00),
@@ -32,5 +34,5 @@ void uart_putc(unsigned char byte);
 unsigned char uart_getc();
 void uart_write(const unsigned char* buffer, int size);
 void uart_puts(const char* str);
-
+void uart_puth(unsigned int d);
 #endif

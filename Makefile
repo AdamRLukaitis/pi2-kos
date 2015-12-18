@@ -15,6 +15,8 @@ OBJ_FILES   := $(patsubst %.S,%.o,$(SOURCES_ASM))
 OBJ_FILES   += $(patsubst %.c,%.o,$(SOURCES_C))
 OBJS        := $(addprefix $(BUILDDIR)/, $(OBJ_FILES))
 
+.PHONY: clean
+
 all: $(BUILDDIR)/kernel.img
 	
 $(BUILDDIR)/kernel.elf: $(OBJS) linker.ld
@@ -29,3 +31,6 @@ $(BUILDDIR)/%.o: %.c Makefile
 $(BUILDDIR)/%.o: %.S Makefile
 	mkdir -p $(BUILDDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
+	
+clean:
+	rm -Rvf $(BUILDDIR)
