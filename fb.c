@@ -4,9 +4,6 @@
 #include "fb.h"
 #include "uart.h"
 
-#define FB_INVALID_WIDTH -1
-#define FB_INVALID_HEIGHT -2
-
 void initialize_fb_struct(volatile pi_framebuffer *fb, unsigned int width, unsigned int height, unsigned int depth) 
 {	
 	fb->width = width;
@@ -46,6 +43,24 @@ int fb_set_pixel(pi_framebuffer* fb, unsigned int x, unsigned int y, unsigned in
 	mmio_write(pixel_address, pixel);
 	
 	return 0;
+}
+
+int fb_set_pixel_region(pi_framebuffer* fb, pi_framebuffer_region* region, unsigned int region_x, unsigned int region_y, unsigned int pixel) 
+{
+	if(region_x > region->width) 
+	{
+		return FB_INVALID_REGION_WIDTH;	
+	}
+	
+	if(region_y > region->height) 
+	{
+		return FB_INVALID_REGION_HEIGHT;	
+	}
+	
+    unsigned int x = region->x + region_x;
+    unsigned int y = region->y + region_y;
+    
+	return fb_set_pixel(fb, x, y, pixel);
 }
 
 void fb_venezuela_flag(pi_framebuffer* fb)
