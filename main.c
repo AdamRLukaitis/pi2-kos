@@ -31,13 +31,11 @@ void kernel_main(unsigned int r0, unsigned int r1, unsigned int atags)
     {   
 	    uchar = uart_getc();
     	
-        //uart_puts("Character to draw: ");
         uart_putc(uchar);
-        //uart_puts("\n\r");
         
         draw_char_fb(uchar, rows, columns++);
         
-        if(columns > 80)
+        if(columns > (1024/8))
         {
             rows++;
             columns = 0;

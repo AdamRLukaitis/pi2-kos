@@ -168,11 +168,8 @@ void draw_char_fb(unsigned char character, unsigned int row, unsigned int column
     {
         while(x--) 
         {
-            fb_set_pixel_region(fb, region, x, y, HAS_FLAG(latin_font_8x8[character], (1ULL << (x + (y * 8)))) ? 0xFFFFFF : 0x000000);
-            //uart_puts(HAS_FLAG(latin_font_8x8[character], (1ULL << (x + (y * 8)))) ? "0" : "_");
+            fb_set_pixel_region(fb, region, x, y, HAS_FLAG(latin_font_8x8[character], (1ULL << (63 - (x + (y * char_width))))) ? 0xFFFFFF : 0x000000);
         }
-        
-        //uart_puts("\n\r");
         x = 8;
     }
 }
