@@ -21,7 +21,7 @@ OBJS        := $(addprefix $(BUILDDIR)/, $(OBJ_FILES))
 .PHONY: clean
 
 all: $(BUILDDIR)/kernel.img
-	
+
 $(BUILDDIR)/kernel.elf: $(OBJS) linker.ld
 	$(LINKER) $(LDFLAGS) -Tlinker.ld -o $@ $(OBJS) $(shell $(CC) -print-libgcc-file-name)
 		
