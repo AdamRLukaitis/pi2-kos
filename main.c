@@ -1,6 +1,7 @@
 #include "util.h"
 #include "uart.h"
 #include "fb.h"
+#include "console.h"
 #define UART_DEBUG
 #define HELLO_WORLD_MESSAGE "Hello World\r\n"
 
@@ -22,6 +23,24 @@ void kernel_main(unsigned int r0, unsigned int r1, unsigned int atags)
 	uart_puts("Framebuffer initialization complete\n\r");	
  	delay(150);
 	 
-	while ( TRUE )
-		uart_putc(uart_getc());
+    unsigned int columns = 0;
+    unsigned int rows = 0;
+    unsigned char uchar = 0; 
+     
+	while ( TRUE ) 
+    {   
+	    uchar = uart_getc();
+    	
+        //uart_puts("Character to draw: ");
+        uart_putc(uchar);
+        //uart_puts("\n\r");
+        
+        draw_char_fb(uchar, rows, columns++);
+        
+        if(columns > 80)
+        {
+            rows++;
+            columns = 0;
+        }
+    }
 }

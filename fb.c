@@ -177,8 +177,7 @@ void init_fb()
 	uart_puts(" \n\r");
 	
 	fb_venezuela_flag(fb);
-	
-	
+    
 	//fb_test_gradient(fb, 80);
 	//fb_blank_screen(fb);
 }
